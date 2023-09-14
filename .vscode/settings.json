@@ -1,0 +1,41 @@
+{
+    "idf.adapterTargetName": "esp32s3",
+    "idf.openOcdConfigs": [
+        "board/esp32s3-bridge.cfg"
+    ],
+    "idf.portWin": "COM3",
+    "idf.flashType": "UART",
+    "files.associations": {
+        "array": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "lcd.h": "c",
+        "config.h": "c",
+        "handle.h": "c",
+        "api.h": "c",
+        "esp_timer.h": "c",
+        "i2c.h": "c",
+        "unistd.h": "c",
+        "interface.h": "c",
+        "esp_log.h": "c",
+        "task.h": "c",
+        "button_gpio.h": "c",
+        "gpio.h": "c",
+        "iot_button.h": "c",
+        "esp_err.h": "c",
+        "freertos.h": "c",
+        "*.tcc": "c",
+        "io_context": "c",
+        "functional": "c",
+        "istream": "c",
+        "ostream": "c",
+        "event_groups.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
