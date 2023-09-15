@@ -92,6 +92,16 @@ void lcd_input_password(uint8_t pos,struct wifiList wList);
  */
 void lcd_print_ssids(struct wifiList wList);
 /**
+ * @brief prints information about not connected device
+ * 
+ */
+void lcd_ping_not_connected(void);
+/**
+ * @brief print input page for host address
+ * 
+ */
+void lcd_ping_input(void);
+/**
  * @brief used to get list of detected networks
  * 
  * @return list of scanned ssids in form of struct wifiList
@@ -128,4 +138,10 @@ void led_set_working_status(void);
  * @brief check if ESP is connected to wifi
  */
 void led_connect_status(void);
+/**
+ * @brief send ping to host address
+ * 
+ * @param host host address
+ */
+void ping_send(uint8_t *host);
 

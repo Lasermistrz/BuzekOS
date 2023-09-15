@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "BuzekOS",
-    "project_version":    "198872e-dirty",
+    "project_version":    "2b4d643-dirty",
     "project_path":       "D:/projects/ESP32/BuzekOS",
     "idf_path":           "C:/Users/damja/esp/esp-idf",
     "build_dir":          "D:/projects/ESP32/BuzekOS/build",
@@ -835,7 +835,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__button", "espressif__led_strip" ],
             "file": "D:/projects/ESP32/BuzekOS/build/esp-idf/main/libmain.a",
-            "sources": [ "D:/projects/ESP32/BuzekOS/main/i2c.c", "D:/projects/ESP32/BuzekOS/main/BuzekOS.c", "D:/projects/ESP32/BuzekOS/main/wifi.c", "D:/projects/ESP32/BuzekOS/main/led.c" ],
+            "sources": [ "D:/projects/ESP32/BuzekOS/main/ping.c", "D:/projects/ESP32/BuzekOS/main/i2c.c", "D:/projects/ESP32/BuzekOS/main/BuzekOS.c", "D:/projects/ESP32/BuzekOS/main/wifi.c", "D:/projects/ESP32/BuzekOS/main/led.c" ],
             "include_dirs": [ "." ]
         },
         "mbedtls": {

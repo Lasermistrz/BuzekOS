@@ -159,3 +159,18 @@ void lcd_input_password(uint8_t pos, struct wifiList wList){
 	lcd_send_data(32);
 	lcd_put_cur(2,0);
 }
+
+void lcd_ping_not_connected(void){
+	lcd_clear();
+	lcd_put_cur(1,0);
+	lcd_send_string("Wifi not connected");
+}
+
+void lcd_ping_input(void){
+	lcd_clear();
+	lcd_put_cur(1,0);
+	lcd_send_string("Input host address");
+	lcd_put_cur(2,0);
+	lcd_send_data(32);
+	lcd_put_cur(2,0);
+}

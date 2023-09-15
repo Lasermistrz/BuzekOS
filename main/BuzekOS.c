@@ -5,14 +5,17 @@ uint8_t actPos = 1;        // first displayed option (not used for now)
 uint8_t itePass = 32;      // char iterator for input password
 uint8_t itePassLength = 0; // stores password length
 uint8_t pass[20] = {'\0'}; // stores password
+uint8_t iteHost = 32;      // char iterator for input host address
+uint8_t iteHostLength = 0; // stores ping host address length
+uint8_t host[20] = {'\0'}; // stores ping host address
 /**
  * @brief chosenOption is variable that stores info about chosen option like option 1 (connect to wifi)
- * or option 2 = input wifi password, 3 = send ping
+ * or option 2 = input wifi password, 3 = send ping input host address
  * 
  *  0 = nothing chosen,
  *  1 = connect to wifi,
  *  2 = input wifi password,
- *  3 = send ping
+ *  3 = send ping input host address
  */
 uint8_t chosenOption = 0;
 struct wifiList wList; // stores list of ssids
@@ -70,6 +73,15 @@ static void button_single_click_cb_up(void *arg, void *usr_data)
         lcd_send_data(itePass);
         lcd_put_cur(2, itePassLength);
     }
+    else if (chosenOption == 3)
+    {
+        host[iteHostLength] = iteHost;
+        iteHost = 32;
+        iteHostLength++;
+        lcd_put_cur(2, iteHostLength);
+        lcd_send_data(iteHost);
+        lcd_put_cur(2, iteHostLength);
+    }
 }
 
 static void button_single_click_cb_down(void *arg, void *usr_data)
@@ -91,6 +103,11 @@ static void button_single_click_cb_down(void *arg, void *usr_data)
         lcd_send_data(++itePass);
         lcd_put_cur(2, itePassLength);
     }
+    else if (chosenOption == 3)
+    {
+        lcd_send_data(++iteHost);
+        lcd_put_cur(2, iteHostLength);
+    }
 }
 
 static void button_single_click_cb_select(void *arg, void *usr_data)
@@ -105,10 +122,13 @@ static void button_single_click_cb_select(void *arg, void *usr_data)
         }
         else if (pos == 2 && connectedFlag)
         {
-            // send ping
+            lcd_ping_input();
+            chosenOption = 3;
         }
         else if (pos ==2 && !connectedFlag){
-            // alert -> not connected
+            lcd_ping_not_connected();
+            usleep(5000000);
+            lcd_print_menu(pos, actPos,connectedFlag);
         }
     }
     else if (chosenOption == 1)
@@ -132,6 +152,10 @@ static void button_single_click_cb_select(void *arg, void *usr_data)
     {
         ESP_LOGW("Input pass", "%s", pass);
         wifi_connect(wList.list[pos - 1], &pass);
+    }
+    else if (chosenOption == 3)
+    {
+        // send_ping(host);
     }
 }
 
@@ -162,7 +186,7 @@ void app_main(void)
     led_set_color(0, 31, 0);
 
     lcd_print_opening_scene();
-    usleep(3000000);
+    usleep(5000000);
 
     lcd_print_menu(pos, actPos,connectedFlag);
 }
