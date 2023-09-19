@@ -1,12 +1,12 @@
 #include "interface.h"
 
 #define DEFAULT_SCAN_LIST_SIZE 3 //max that can be displayed with header
-
+static const char *TAG = "WIFI";
 TaskHandle_t statusTaskHandle;
 TaskHandle_t wifiStatusTaskHandle;
 wifi_config_t wifi_config;
 EventGroupHandle_t s_wifi_event_group;
-extern int connectedFlag;
+extern uint8_t connectedFlag;
 
 void event_handler(void *arg, esp_event_base_t event_base,
                    int32_t event_id, void *event_data)
@@ -18,7 +18,10 @@ void event_handler(void *arg, esp_event_base_t event_base,
     else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_CONNECTED)
     {
         connectedFlag=1;
-    }
+    } /*else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
+		ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
+		ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
+	}*/
 }
 
 struct wifiList wifi_scan_ssids(void)
@@ -82,6 +85,7 @@ void wifi_connect(uint8_t *ssid, uint8_t *pass)
     ESP_ERROR_CHECK(esp_netif_init());
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    ESP_ERROR_CHECK(esp_wifi_set_ps(WIFI_PS_NONE));
 
     strcpy((char *)wifi_config.sta.ssid, (char *)ssid);
     strcpy((char *)wifi_config.sta.password, (char *)pass);

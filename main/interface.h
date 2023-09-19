@@ -14,6 +14,9 @@
 #include <esp_system.h>
 #include <esp_event.h>
 #include <esp_wifi.h>
+#include "lwip/sockets.h"
+#include "lwip/netdb.h"
+#include "ping/ping_sock.h"
 
 #define I2C_MASTER_SDA_IO 1
 #define I2C_MASTER_SCL_IO 2
@@ -24,6 +27,7 @@
 #define BUTTON_GPIO_SELECT_PIN 39
 #define BUTTON_GPIO_UP_PIN 38
 #define BUTTON_GPIO_DOWN_PIN 35
+#define PING_COUNT 5
 #define OPTION_WIFI "Connect to Wifi"
 #define OPTION_PING "Send Ping"
 
@@ -102,6 +106,24 @@ void lcd_ping_not_connected(void);
  */
 void lcd_ping_input(void);
 /**
+ * @brief shows results of last ping sequence
+ * 
+ * @param transmitted ping requests send
+ * @param received ping replies received
+ * @param loss packet loss
+ * @param total_time_ms ping time
+ * @param target_addr target's ip address
+ */
+void lcd_ping_result(uint32_t transmitted, uint32_t received, uint32_t loss, uint32_t total_time_ms, ip_addr_t target_addr);
+/**
+ * @brief display information about DNS lookup failed
+ * 
+ * 
+ * @param res resource
+ * @param err error code
+ */
+void lcd_dns_error(struct addrinfo *res, int err);
+/**
  * @brief used to get list of detected networks
  * 
  * @return list of scanned ssids in form of struct wifiList
@@ -144,4 +166,11 @@ void led_connect_status(void);
  * @param host host address
  */
 void ping_send(uint8_t *host);
-
+/**
+ * @brief used to fast enter password or host address
+ * 
+ * @param[in] input password or host address
+ * @param arg arguments (pass from buttons) 
+ * @param usr_data user data (pass from buttons)
+ */
+void inputFun(char* input, void *arg, void *usr_data);

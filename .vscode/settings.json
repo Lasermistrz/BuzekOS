@@ -35,7 +35,11 @@
         "functional": "c",
         "istream": "c",
         "ostream": "c",
-        "event_groups.h": "c"
+        "event_groups.h": "c",
+        "sockets.h": "c",
+        "netdb.h": "c",
+        "ping_sock.h": "c",
+        "*.inc": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

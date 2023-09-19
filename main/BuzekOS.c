@@ -11,7 +11,7 @@ uint8_t host[20] = {'\0'}; // stores ping host address
 /**
  * @brief chosenOption is variable that stores info about chosen option like option 1 (connect to wifi)
  * or option 2 = input wifi password, 3 = send ping input host address
- * 
+ *
  *  0 = nothing chosen,
  *  1 = connect to wifi,
  *  2 = input wifi password,
@@ -24,7 +24,7 @@ extern TaskHandle_t statusTaskHandle;
 extern TaskHandle_t wifiStatusTaskHandle;
 extern uint8_t connectedFlag;
 extern void event_handler(void *arg, esp_event_base_t event_base,
-                   int32_t event_id, void *event_data);
+                          int32_t event_id, void *event_data);
 
 button_config_t gpio_btn_cfg_down = {
     .type = BUTTON_TYPE_GPIO,
@@ -56,7 +56,7 @@ button_config_t gpio_btn_cfg_select = {
     },
 };
 
-static void button_single_click_cb_up(void *arg, void *usr_data)
+void button_single_click_cb_up(void *arg, void *usr_data)
 {
     if (chosenOption == 0 || chosenOption == 1)
     {
@@ -84,7 +84,7 @@ static void button_single_click_cb_up(void *arg, void *usr_data)
     }
 }
 
-static void button_single_click_cb_down(void *arg, void *usr_data)
+void button_single_click_cb_down(void *arg, void *usr_data)
 {
     if (chosenOption == 0)
     {
@@ -110,7 +110,7 @@ static void button_single_click_cb_down(void *arg, void *usr_data)
     }
 }
 
-static void button_single_click_cb_select(void *arg, void *usr_data)
+void button_single_click_cb_select(void *arg, void *usr_data)
 {
     if (chosenOption == 0)
     {
@@ -124,11 +124,17 @@ static void button_single_click_cb_select(void *arg, void *usr_data)
         {
             lcd_ping_input();
             chosenOption = 3;
+            for (int i = 0; i < 20; i++)
+            { // clear current phost address to reenter address
+                host[i] = '\0';
+            }
+            //inputFun("host address", arg, usr_data);
         }
-        else if (pos ==2 && !connectedFlag){
+        else if (pos == 2 && !connectedFlag)
+        {
             lcd_ping_not_connected();
             usleep(5000000);
-            lcd_print_menu(pos, actPos,connectedFlag);
+            lcd_print_menu(pos, actPos, connectedFlag);
         }
     }
     else if (chosenOption == 1)
@@ -136,17 +142,12 @@ static void button_single_click_cb_select(void *arg, void *usr_data)
         lcd_input_password(pos, wList);
         chosenOption = 2;
         itePassLength = 0;
-        for(int i=0;i<20;i++){ // clear current password -> necessary if you entered incorrect password and want to try again
-            pass[i]='\0';
+        for (int i = 0; i < 20; i++)
+        { // clear current password -> necessary if you entered incorrect password and want to try again
+            pass[i] = '\0';
         }
 
-        /***
-         * This fragment shows a way to auto enter password, copy for loop for every char in password.
-        for (int i = 0; i < 'a' - 32; i++)
-            button_single_click_cb_down(arg, usr_data);
-        button_single_click_cb_up(arg, usr_data);
-        usleep(1000000);
-        button_single_click_cb_select(arg, usr_data);*/
+        //inputFun("passphrase", arg, usr_data);
     }
     else if (chosenOption == 2)
     {
@@ -155,7 +156,7 @@ static void button_single_click_cb_select(void *arg, void *usr_data)
     }
     else if (chosenOption == 3)
     {
-        // send_ping(host);
+        ping_send(host);
     }
 }
 
@@ -170,17 +171,15 @@ void app_main(void)
     iot_button_register_cb(gpio_btn_down, BUTTON_SINGLE_CLICK, button_single_click_cb_down, NULL);
     iot_button_register_cb(gpio_btn_select, BUTTON_SINGLE_CLICK, button_single_click_cb_select, NULL);
     ESP_ERROR_CHECK(esp_netif_init());
-    esp_netif_t *sta_netif = esp_netif_create_default_wifi_sta();
-    assert(sta_netif);
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT,
-                                                        ESP_EVENT_ANY_ID,
-                                                        &event_handler,
-                                                        NULL));
+    esp_netif_create_default_wifi_sta();
+
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL));
+    // ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL));
 
     led_init();
     usleep(2000); // wait 2 ms
-    xTaskCreatePinnedToCore(led_set_working_status,"working_status",4096,NULL,10,&statusTaskHandle,1);
+    xTaskCreatePinnedToCore(led_set_working_status, "working_status", 4096, NULL, 10, &statusTaskHandle, 1);
     vTaskSuspend(statusTaskHandle);
     usleep(2000);
     led_set_color(0, 31, 0);
@@ -188,5 +187,5 @@ void app_main(void)
     lcd_print_opening_scene();
     usleep(5000000);
 
-    lcd_print_menu(pos, actPos,connectedFlag);
+    lcd_print_menu(pos, actPos, connectedFlag);
 }
